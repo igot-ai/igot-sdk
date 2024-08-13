@@ -1,8 +1,10 @@
 {
-  "name": "igot-ai",
+  "name": "igot.ai",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "yarn nx run-many --target=build --all=true"
+  },
   "private": true,
   "devDependencies": {
     "@babel/core": "^7.14.5",
