@@ -13,7 +13,13 @@
     "react-native-svg-transformer": "*",
     "react-dom": "*",
     "@nx/webpack": "*",
-    "@nx/react": "*"
+    "@nx/react": "*",
+    "@nx/rollup": "*",
+    "lodash": "*",
+    "axios": "*",
+    "lucide-react-native": "*",
+    "rn-emoji-keyboard": "*",
+    "zustand": "*"
   },
   "devDependencies": {}
 }
