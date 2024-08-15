@@ -1,1 +1,1 @@
-export * from './test';
+export * from './va-chat-button';

@@ -3,6 +3,11 @@
   "version": "0.0.1",
   "peerDependencies": {
     "react": "18.2.0",
-    "react-native": "0.74.1"
+    "react-native": "0.74.1",
+    "rn-emoji-keyboard": "^1.7.0",
+    "zustand": "^4.5.4",
+    "lucide-react-native": "^0.427.0",
+    "axios": "^1.7.4",
+    "lodash": "^4.17.21"
   }
 }
