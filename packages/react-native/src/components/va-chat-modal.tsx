@@ -19,7 +19,6 @@ import {
 } from 'react-native';
 
 import EmojiPicker from 'rn-emoji-keyboard';
-import { getConfig } from '../config';
 
 interface Props extends ModalProps {
   // TODO: Add props
@@ -27,8 +26,6 @@ interface Props extends ModalProps {
 
 export const VAChatModal = (props: Props) => {
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
-
-  console.log(getConfig().apiKey, getConfig().apiSecret);
 
   return (
     <React.Fragment>
@@ -85,7 +82,7 @@ export const VAChatModal = (props: Props) => {
                 renderItem={({ item }) => {
                   return (
                     <View>
-                      <Text>{getConfig().apiKey}</Text>
+                      <Text>Hello</Text>
                     </View>
                   );
                 }}

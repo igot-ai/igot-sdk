@@ -1,12 +1,16 @@
 import { api } from '../api';
 import { getConfig } from '../config';
 import { API_URLS } from '../constants';
-import { SendPrompt, SessionResponse } from '../types';
+import { Builder, SendPrompt, SessionResponse } from '../types';
 
 export class VAService {
   config = getConfig();
   apiKey = this.config.apiKey;
   apiSecret = this.config.apiSecret;
+
+  public async getContextInfo(): Promise<Builder> {
+    return await api.get(`${API_URLS.BUILDER_CONTEXT}/${this.apiSecret}`);
+  }
 
   public async createSession(): Promise<SessionResponse> {
     return await api.post(`${API_URLS.CHAT}/${this.apiSecret}`);

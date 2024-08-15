@@ -8,6 +8,7 @@ export const API_URLS = {
   CHAT: '/v1/chat',
   PROFILE: '/v1/me',
   BUILDER: '/v1/builder',
+  BUILDER_CONTEXT: '/v1/builder/context',
   SSE_LISTENER: BASE_API_URL + '/sse/sub',
 };
 
