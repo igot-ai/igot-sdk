@@ -15,8 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@igot.ai/react-native": ["packages/react-native/src/index.ts"],
-      "@igot.ai/types": ["libs/types/src/index.ts"]
+      "@igot.ai/react-native": ["packages/react-native/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
