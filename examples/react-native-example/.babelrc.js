@@ -14,12 +14,32 @@ module.exports = function (api) {
           },
         ],
       ],
+      plugins: [
+        [
+          'module:react-native-dotenv',
+          {
+            envName: 'APP_ENV',
+            moduleName: '@env',
+            path: '.env',
+          },
+        ],
+      ],
     };
   }
 
   return {
     presets: [
       ['module:@react-native/babel-preset', { useTransformReactJSX: true }],
+    ],
+    plugins: [
+      [
+        'module:react-native-dotenv',
+        {
+          envName: 'APP_ENV',
+          moduleName: '@env',
+          path: '.env',
+        },
+      ],
     ],
   };
 };

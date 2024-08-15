@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { VAChatButton } from '@igot.ai/react-native';
+import { VAChatButton, setConfig } from '@igot.ai/react-native';
 import React, { useRef } from 'react';
+import { VA_API_KEY, VA_API_SECRET } from '@env';
 import {
   SafeAreaView,
   StyleSheet,
@@ -9,6 +10,11 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
+
+setConfig({
+  apiKey: VA_API_KEY,
+  apiSecret: VA_API_SECRET,
+});
 
 export const App = () => {
   const scrollViewRef = useRef<null | ScrollView>(null);
