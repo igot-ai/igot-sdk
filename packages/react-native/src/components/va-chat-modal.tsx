@@ -1,5 +1,6 @@
 import { Mic, Smile } from 'lucide-react-native';
 import React, { useState } from 'react';
+
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -18,6 +19,7 @@ import {
 } from 'react-native';
 
 import EmojiPicker from 'rn-emoji-keyboard';
+import { getConfig } from '../config';
 
 interface Props extends ModalProps {
   // TODO: Add props
@@ -25,6 +27,9 @@ interface Props extends ModalProps {
 
 export const VAChatModal = (props: Props) => {
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
+
+  console.log(getConfig().apiKey, getConfig().apiSecret);
+
   return (
     <React.Fragment>
       <StatusBar barStyle="dark-content" />
@@ -39,7 +44,23 @@ export const VAChatModal = (props: Props) => {
             style={{ flex: 1 }}
             keyboardVerticalOffset={100}
           >
-            <View style={{ flex: 1, backgroundColor: '#fff', padding: 25 }}>
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: '#fff',
+                paddingHorizontal: 25,
+                paddingTop: 25,
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: 25,
+                  fontWeight: 'bold',
+                }}
+              >
+                iGOT.ai Virtual Assistant
+              </Text>
               <VirtualizedList
                 inverted={
                   false
@@ -47,7 +68,7 @@ export const VAChatModal = (props: Props) => {
                 }
                 // ref={flatListRef}
                 getItemCount={() => 0}
-                data={[]}
+                data={[{}]}
                 keyExtractor={(conversation) => 'id_'}
                 ListFooterComponent={() => {
                   return (
@@ -56,23 +77,15 @@ export const VAChatModal = (props: Props) => {
                     </TouchableWithoutFeedback>
                   );
                 }}
-                ListHeaderComponent={() => {
-                  return (
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontSize: 25,
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      iGOT.ai Virtual Assistant
-                    </Text>
-                  );
-                }}
+                // ListHeaderComponent={() => {
+                //   return (
+
+                //   );
+                // }}
                 renderItem={({ item }) => {
                   return (
                     <View>
-                      <Text>Hi</Text>
+                      <Text>{getConfig().apiKey}</Text>
                     </View>
                   );
                 }}

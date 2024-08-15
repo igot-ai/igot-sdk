@@ -1,7 +1,10 @@
 import { create } from 'zustand';
+import { Conversation } from '../types';
 
 interface VAChatProperties {
   openChatModal: boolean;
+  session: string;
+  conversations: Conversation[];
 }
 
 interface VAChatStore extends VAChatProperties {
@@ -14,6 +17,8 @@ interface VAChatStore extends VAChatProperties {
 
 export const useChatStore = create<VAChatStore>((set) => ({
   openChatModal: false,
+  session: '',
+  conversations: [],
   setChatStore: (updater) => {
     set((state) => ({
       ...state,
