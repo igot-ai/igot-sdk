@@ -1,5 +1,5 @@
 import { Mic, Smile } from 'lucide-react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   Image,
@@ -29,15 +29,42 @@ interface Props extends ModalProps {
   // TODO: Add props
 }
 
-export const VAChatModal = (props: Props) => {
+export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
+  const [message, setMessage] = useState('');
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
-  const { vaContextInfo, conversations } = useChatStore();
-  const { typingResponse } = useChatBot();
+  const {
+    vaContextInfo,
+    conversations,
+    setChatStore,
+    resetChatStore,
+    typingResponse,
+  } = useChatStore();
+  const { sendPrompt, createSession } = useChatBot();
+
+  useEffect(() => {
+    if (!props.visible) return;
+
+    (async () => {
+      try {
+        const session = await createSession();
+        console.log('🚀 ~ session:', session);
+        setChatStore({ session });
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [props.visible]);
 
   return (
     <React.Fragment>
       <StatusBar barStyle="dark-content" />
-      <Modal {...props}>
+      <Modal
+        onRequestClose={(event) => {
+          onRequestClose && onRequestClose(event);
+          resetChatStore();
+        }}
+        {...props}
+      >
         <SafeAreaView
           style={{
             flex: 1,
@@ -68,14 +95,14 @@ export const VAChatModal = (props: Props) => {
               </Text>
               <VirtualizedList
                 inverted={
-                  true
-                  // conversations.length !== 0 || typingResponse ? true : false
+                  // true
+                  conversations.length !== 0 || typingResponse ? true : false
                 }
                 // ref={flatListRef}
                 getItem={(data: Conversation[], index: number) => data[index]}
-                getItemCount={() => 2}
-                // data={conversations.toReversed()}
-                data={[{ id: 1 }, { id: 2 }]}
+                getItemCount={(data: Conversation[]) => data.length}
+                data={conversations.toReversed()}
+                // data={[{ id: 1 }, { id: 2 }]}
                 keyExtractor={(conversation: Conversation) =>
                   'id_' + conversation.id
                 }
@@ -86,13 +113,11 @@ export const VAChatModal = (props: Props) => {
                     </TouchableWithoutFeedback>
                   );
                 }}
-                // ListHeaderComponent={() => {
-                //   return (
-
-                //   );
-                // }}
-                renderItem={({ item, index }) => {
-                  const even = index % 2 === 0;
+                ListHeaderComponent={() => {
+                  return typingResponse && <Text>{typingResponse}</Text>;
+                }}
+                renderItem={({ item }) => {
+                  const user = item.role === 'user';
                   return (
                     <View
                       style={[
@@ -101,14 +126,14 @@ export const VAChatModal = (props: Props) => {
                           alignItems: 'center',
                           gap: 10,
                         },
-                        even && {
+                        user && {
                           width: '75%',
                           marginLeft: 'auto',
                           flexDirection: 'row-reverse',
                         },
                       ]}
                     >
-                      {!even && (
+                      {!user && (
                         <Image
                           source={{
                             uri: vaContextInfo?.snapshot.logo,
@@ -124,7 +149,7 @@ export const VAChatModal = (props: Props) => {
                             padding: 15,
                             borderRadius: 15,
                           },
-                          even
+                          user
                             ? {
                                 backgroundColor: COLORS.blue,
                                 borderEndEndRadius: 0,
@@ -137,11 +162,11 @@ export const VAChatModal = (props: Props) => {
                       >
                         <Text
                           style={{
-                            color: even ? COLORS.white : COLORS.black,
+                            color: user ? COLORS.white : COLORS.black,
                             fontSize: 16,
                           }}
                         >
-                          Hello
+                          {item.content}
                         </Text>
                       </View>
                     </View>
@@ -160,11 +185,15 @@ export const VAChatModal = (props: Props) => {
                 <TextInput
                   placeholder="Write to start"
                   placeholderTextColor={'#6B7280'}
-                  // onSubmitEditing={handleSendMessage} // Handle submit when the "Go" button is pressed
+                  onSubmitEditing={async (e) => {
+                    e.preventDefault();
+                    await sendPrompt(message);
+                    setMessage('');
+                  }} // Handle submit when the "Go" button is pressed
                   multiline={false}
                   returnKeyType="send" // Display "Go" button on iOS keyboard
-                  // onChangeText={onChange}
-                  // {...{ value, onBlur }}
+                  onChangeText={setMessage}
+                  value={message}
                   style={{
                     minHeight: 55,
                     paddingHorizontal: 15,

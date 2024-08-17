@@ -12,19 +12,18 @@ const SSE_SUCCESS_OR_ERROR = ['_SUCCESS', '_ERROR'];
 export const useChatBot = () => {
   const { setChatStore, session } = useChatStore();
   const [response, setResponse] = useState('');
-  const [typingResponse, setTypingResponse] = useState('');
 
   useEffect(() => {
     if (!response) return;
 
     if (SSE_SUCCESS_OR_ERROR.includes(String(response))) {
       setResponse(RESET_RESPONSE);
-      setTypingResponse(RESET_RESPONSE);
+      setChatStore({ typingResponse: RESET_RESPONSE });
 
       return;
     }
     if (response === '[' || response === '```' || response === '```yaml') {
-      setTypingResponse(LLM_THINKING_MODE);
+      setChatStore({ typingResponse: LLM_THINKING_MODE });
     }
     const regex = /Answer:\s*(.*?)(?=\n|$)/;
     const match = regex.exec(response);
@@ -35,10 +34,10 @@ export const useChatBot = () => {
       response === 'STARTING' ||
       String(response).includes('[/answer]')
     ) {
-      setTypingResponse(LLM_PROCESSING_MODE);
+      setChatStore({ typingResponse: LLM_PROCESSING_MODE });
     }
 
-    setTypingResponse(`${answer || LLM_PROCESSING_MODE}\n`);
+    setChatStore({ typingResponse: `${answer || LLM_PROCESSING_MODE}\n` });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
@@ -51,23 +50,18 @@ export const useChatBot = () => {
 
   const sendPrompt = async (prompt: string) => {
     try {
-      let chatSession = session;
-      if (!chatSession) {
-        chatSession = await createSession();
+      if (!session) {
+        alert('Session not created');
       }
-      await vaService.sendPrompt({ session: chatSession, prompt });
+      await vaService.sendPrompt({ session, prompt });
+      await triggerListener();
     } catch (error) {
       console.error(error);
     }
   };
 
   const triggerListener = async () => {
-    let chatSession = session;
-    if (!chatSession) {
-      chatSession = await createSession();
-    }
-
-    const eventSource = vaService.listenToSession(chatSession); // TODO: Add session
+    const eventSource = vaService.listenToSession(session); // TODO: Add session
 
     eventSource.addEventListener('message', async (event) => {
       if (!event.data) return;
@@ -97,5 +91,5 @@ export const useChatBot = () => {
     });
   };
 
-  return { createSession, sendPrompt, triggerListener, typingResponse };
+  return { createSession, sendPrompt, triggerListener };
 };

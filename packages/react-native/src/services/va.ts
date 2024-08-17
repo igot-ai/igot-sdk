@@ -2,6 +2,7 @@ import { api } from '../api';
 import { getConfig } from '../config';
 import { API_URLS } from '../constants';
 import { Builder, SendPrompt, SessionResponse } from '../types';
+import EventSource from 'react-native-sse';
 
 export class VAService {
   config = getConfig();

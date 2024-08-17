@@ -35,8 +35,12 @@ export const VAChatButton: React.FC<VAChatButtonProps> = ({
 
   useEffect(() => {
     (async () => {
-      const vaContextInfo = await vaService.getContextInfo();
-      setChatStore({ vaContextInfo });
+      try {
+        const vaContextInfo = await vaService.getContextInfo();
+        setChatStore({ vaContextInfo });
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [setChatStore]);
 
