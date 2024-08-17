@@ -15,30 +15,31 @@ export const useChatBot = () => {
   const [typingResponse, setTypingResponse] = useState('');
 
   useEffect(() => {
-    if (response) {
-      if (SSE_SUCCESS_OR_ERROR.includes(String(response))) {
-        setResponse(RESET_RESPONSE);
-        setTypingResponse(RESET_RESPONSE);
+    if (!response) return;
 
-        return;
-      }
-      if (response === '[' || response === '```' || response === '```yaml') {
-        setTypingResponse(LLM_THINKING_MODE);
-      }
-      const regex = /Answer:\s*(.*?)(?=\n|$)/;
-      const match = regex.exec(response);
-      const answer = match ? match[1].trim() : '';
+    if (SSE_SUCCESS_OR_ERROR.includes(String(response))) {
+      setResponse(RESET_RESPONSE);
+      setTypingResponse(RESET_RESPONSE);
 
-      if (
-        (!isObject(response) && answer) ||
-        response === 'STARTING' ||
-        String(response).includes('[/answer]')
-      ) {
-        setTypingResponse(LLM_PROCESSING_MODE);
-      }
-
-      setTypingResponse(`${answer || LLM_PROCESSING_MODE}\n`);
+      return;
     }
+    if (response === '[' || response === '```' || response === '```yaml') {
+      setTypingResponse(LLM_THINKING_MODE);
+    }
+    const regex = /Answer:\s*(.*?)(?=\n|$)/;
+    const match = regex.exec(response);
+    const answer = match ? match[1].trim() : '';
+
+    if (
+      (!isObject(response) && answer) ||
+      response === 'STARTING' ||
+      String(response).includes('[/answer]')
+    ) {
+      setTypingResponse(LLM_PROCESSING_MODE);
+    }
+
+    setTypingResponse(`${answer || LLM_PROCESSING_MODE}\n`);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
 

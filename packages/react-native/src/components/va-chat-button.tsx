@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   TouchableOpacity,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
 import { Bot } from 'lucide-react-native';
 import { useChatStore } from '../store';
 import { VAChatModal } from './va-chat-modal';
+import { vaService } from '../services';
 
 interface VAChatButtonProps {
   size?: number;
@@ -31,6 +32,13 @@ export const VAChatButton: React.FC<VAChatButtonProps> = ({
   padding = 10,
 }) => {
   const { setChatStore, openChatModal } = useChatStore();
+
+  useEffect(() => {
+    (async () => {
+      const vaContextInfo = await vaService.getContextInfo();
+      setChatStore({ vaContextInfo });
+    })();
+  }, [setChatStore]);
 
   return (
     <React.Fragment>

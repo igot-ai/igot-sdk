@@ -19,6 +19,7 @@ import {
 } from 'react-native';
 
 import EmojiPicker from 'rn-emoji-keyboard';
+import { useChatStore } from '../store';
 
 interface Props extends ModalProps {
   // TODO: Add props
@@ -26,6 +27,7 @@ interface Props extends ModalProps {
 
 export const VAChatModal = (props: Props) => {
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
+  const { vaContextInfo } = useChatStore();
 
   return (
     <React.Fragment>
@@ -52,11 +54,11 @@ export const VAChatModal = (props: Props) => {
               <Text
                 style={{
                   textAlign: 'center',
-                  fontSize: 25,
+                  fontSize: 20,
                   fontWeight: 'bold',
                 }}
               >
-                iGOT.ai Virtual Assistant
+                {vaContextInfo?.name}
               </Text>
               <VirtualizedList
                 inverted={
