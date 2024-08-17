@@ -2,6 +2,7 @@ import { Mic, Smile } from 'lucide-react-native';
 import React, { useState } from 'react';
 
 import {
+  Image,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -20,6 +21,9 @@ import {
 
 import EmojiPicker from 'rn-emoji-keyboard';
 import { useChatStore } from '../store';
+import { useChatBot } from '../hooks';
+import { Conversation } from '../types';
+import { COLORS } from '../constants';
 
 interface Props extends ModalProps {
   // TODO: Add props
@@ -27,7 +31,8 @@ interface Props extends ModalProps {
 
 export const VAChatModal = (props: Props) => {
   const [openEmojiModal, setOpenEmojiModal] = useState(false);
-  const { vaContextInfo } = useChatStore();
+  const { vaContextInfo, conversations } = useChatStore();
+  const { typingResponse } = useChatBot();
 
   return (
     <React.Fragment>
@@ -56,19 +61,24 @@ export const VAChatModal = (props: Props) => {
                   textAlign: 'center',
                   fontSize: 20,
                   fontWeight: 'bold',
+                  paddingBottom: 20,
                 }}
               >
                 {vaContextInfo?.name}
               </Text>
               <VirtualizedList
                 inverted={
-                  false
+                  true
                   // conversations.length !== 0 || typingResponse ? true : false
                 }
                 // ref={flatListRef}
-                getItemCount={() => 0}
-                data={[{}]}
-                keyExtractor={(conversation) => 'id_'}
+                getItem={(data: Conversation[], index: number) => data[index]}
+                getItemCount={() => 2}
+                // data={conversations.toReversed()}
+                data={[{ id: 1 }, { id: 2 }]}
+                keyExtractor={(conversation: Conversation) =>
+                  'id_' + conversation.id
+                }
                 ListFooterComponent={() => {
                   return (
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -81,19 +91,70 @@ export const VAChatModal = (props: Props) => {
 
                 //   );
                 // }}
-                renderItem={({ item }) => {
+                renderItem={({ item, index }) => {
+                  const even = index % 2 === 0;
                   return (
-                    <View>
-                      <Text>Hello</Text>
+                    <View
+                      style={[
+                        {
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 10,
+                        },
+                        even && {
+                          width: '75%',
+                          marginLeft: 'auto',
+                          flexDirection: 'row-reverse',
+                        },
+                      ]}
+                    >
+                      {!even && (
+                        <Image
+                          source={{
+                            uri: vaContextInfo?.snapshot.logo,
+                            width: 40,
+                            height: 40,
+                          }}
+                        />
+                      )}
+                      <View
+                        style={[
+                          {
+                            flex: 1,
+                            padding: 15,
+                            borderRadius: 15,
+                          },
+                          even
+                            ? {
+                                backgroundColor: COLORS.blue,
+                                borderEndEndRadius: 0,
+                              }
+                            : {
+                                backgroundColor: COLORS.gray,
+                                borderBottomStartRadius: 0,
+                              },
+                        ]}
+                      >
+                        <Text
+                          style={{
+                            color: even ? COLORS.white : COLORS.black,
+                            fontSize: 16,
+                          }}
+                        >
+                          Hello
+                        </Text>
+                      </View>
                     </View>
                   );
                 }}
+                ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               />
               <View
                 style={{
                   backgroundColor: '#F4F4F4',
                   borderRadius: 5,
                   position: 'relative',
+                  marginTop: 20,
                 }}
               >
                 <TextInput

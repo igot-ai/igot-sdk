@@ -19,3 +19,5 @@ export enum SCROLL_DIRECTION {
 }
 
 export const AUTH_TOKEN_KEY = 'TOKEN';
+
+export * from './colors';
