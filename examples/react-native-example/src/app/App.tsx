@@ -1,7 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { VAChatButton, setConfig } from '@igot.ai/react-native';
 import React, { useRef } from 'react';
-import { VA_API_KEY, VA_API_SECRET } from '@env';
 import {
   SafeAreaView,
   StyleSheet,
@@ -11,9 +9,12 @@ import {
   StatusBar,
 } from 'react-native';
 
+import { IGOT_AI_VA_API_KEY, IGOT_AI_VA_API_SECRET } from '@env';
+import { IgotAiVAChatButton, setConfig } from '@igot.ai/react-native';
+
 setConfig({
-  apiKey: VA_API_KEY,
-  apiSecret: VA_API_SECRET,
+  apiKey: IGOT_AI_VA_API_KEY,
+  apiSecret: IGOT_AI_VA_API_SECRET,
 });
 
 export const App = () => {
@@ -51,7 +52,7 @@ export const App = () => {
                   Click the button below to start the conversation
                 </Text>
               </View>
-              <VAChatButton />
+              <IgotAiVAChatButton />
             </View>
           </View>
         </ScrollView>
