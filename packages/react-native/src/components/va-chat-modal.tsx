@@ -24,6 +24,7 @@ import { useChatStore } from '../store';
 import { useChatBot } from '../hooks';
 import { Conversation } from '../types';
 import { COLORS } from '../constants';
+import { RenderMessageContent } from './message';
 
 interface Props extends ModalProps {
   // TODO: Add props
@@ -47,7 +48,6 @@ export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
     (async () => {
       try {
         const session = await createSession();
-        console.log('🚀 ~ session:', session);
         setChatStore({ session });
       } catch (error) {
         console.log(error);
@@ -114,14 +114,48 @@ export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
                   );
                 }}
                 ListHeaderComponent={() => {
-                  return typingResponse && <Text>{typingResponse}</Text>;
+                  return (
+                    typingResponse && (
+                      <View
+                        style={{
+                          marginTop: 20,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 10,
+                        }}
+                      >
+                        <Image
+                          source={{
+                            uri: vaContextInfo?.snapshot.logo,
+                            width: 40,
+                            height: 40,
+                          }}
+                        />
+
+                        <View
+                          style={[
+                            {
+                              flex: 1,
+                              padding: 15,
+                              borderRadius: 15,
+                              backgroundColor: COLORS.gray,
+                              borderBottomStartRadius: 0,
+                            },
+                          ]}
+                        >
+                          <Text>{typingResponse}</Text>
+                        </View>
+                      </View>
+                    )
+                  );
                 }}
-                renderItem={({ item }) => {
-                  const user = item.role === 'user';
+                renderItem={({ item: conversation }) => {
+                  const user = conversation.role === 'user';
                   return (
                     <View
                       style={[
                         {
+                          marginTop: 20,
                           flexDirection: 'row',
                           alignItems: 'center',
                           gap: 10,
@@ -146,7 +180,8 @@ export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
                         style={[
                           {
                             flex: 1,
-                            padding: 15,
+                            paddingHorizontal: 15,
+                            paddingVertical: 5,
                             borderRadius: 15,
                           },
                           user
@@ -160,19 +195,12 @@ export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
                               },
                         ]}
                       >
-                        <Text
-                          style={{
-                            color: user ? COLORS.white : COLORS.black,
-                            fontSize: 16,
-                          }}
-                        >
-                          {item.content}
-                        </Text>
+                        <RenderMessageContent {...{ conversation, user }} />
                       </View>
                     </View>
                   );
                 }}
-                ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+                // ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
               />
               <View
                 style={{
@@ -222,7 +250,10 @@ export const VAChatModal = ({ onRequestClose, ...props }: Props) => {
                       onClose={() => setOpenEmojiModal(false)}
                     />
                   </TouchableOpacity>
-                  <TouchableOpacity style={{ marginHorizontal: 5 }}>
+                  <TouchableOpacity
+                    style={{ marginHorizontal: 5 }}
+                    onPress={() => alert('Coming soon!')}
+                  >
                     <Mic size={24} color="#6B7280" />
                   </TouchableOpacity>
                 </View>

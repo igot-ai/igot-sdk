@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useChatStore } from '../store';
 import { isObject, uniqBy } from 'lodash';
 import { vaService } from '../services';
@@ -37,7 +37,7 @@ export const useChatBot = () => {
       setChatStore({ typingResponse: LLM_PROCESSING_MODE });
     }
 
-    setChatStore({ typingResponse: `${answer || LLM_PROCESSING_MODE}\n` });
+    setChatStore({ typingResponse: `${answer || LLM_PROCESSING_MODE}` });
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response]);
@@ -60,13 +60,14 @@ export const useChatBot = () => {
     }
   };
 
-  const triggerListener = async () => {
+  const triggerListener = useCallback(async () => {
     const eventSource = vaService.listenToSession(session); // TODO: Add session
 
     eventSource.addEventListener('message', async (event) => {
       if (!event.data) return;
 
       const data = JSON.parse(event.data);
+      setResponse(data.response);
 
       if (data.id > 0 && SESSION_ASSETS.includes(data.role)) {
         const conversation = {
@@ -89,7 +90,7 @@ export const useChatBot = () => {
       console.error('EventSource failed:', error);
       eventSource.close();
     });
-  };
+  }, [session, setChatStore]);
 
   return { createSession, sendPrompt, triggerListener };
 };
